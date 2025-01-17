@@ -18,4 +18,3 @@ SAR Data and Stats Team
 
 ## Version History
 * 1.0
-    * Initial Release
