@@ -7,11 +7,12 @@ clear all
 set more off
 set trace off 
 
+global cpiver		"v13"
 global code         "BGD"
-global year         "2016"
+global year         "2022"
 global survey       "HIES"
-global vm           "01"
-global va           "08"
+global vm           "02"
+global va           "05"
 global yearfolder   ="${code}"+"_"+"${year}"+"_"+"${survey}"
 
 notes: possible answers for the following local: Y and N.
@@ -29,11 +30,12 @@ notes: lines from 21 to 26 are run when a database is created as a data preparat
 // do "`dopath2'//${yearfolder}_v${vm}_M.do"
 
 *Run master
+/*
 local dopath1  "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_M"
 local dopath2  "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs"
 shell robocopy "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_M" "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs" /e
-do "`dopath2'//${yearfolder}_v${vm}_M.do"
-
+do "`dopath2'\\${yearfolder}_v${vm}_M.do"
+*/
 * Copy do-files from repo to datalibweb
 local dopath1  "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_SARMD"
 local dopath2  "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M_v${va}_A_SARMD\Programs"
@@ -55,7 +57,7 @@ if "`includes_INCmodule'"=="N" {
 		}	
 	}
 	else if ${year}>=2016 {
-		foreach mod in   "IND" "COR" "DEM" "IDN"  "LBR" "GEO" "UTL" "DWL"  { 
+		foreach mod in   "IND" "COR" "DEM" "IDN" "LBR" "GEO" "UTL" "DWL"  { 
 			glo module "`mod'"
 			local filename     "${yearfolder}_v${vm}_M_v${va}_A_SARMD_`mod'"
 			do "`dopath2'\\`filename'.do"
@@ -70,15 +72,25 @@ if "`includes_INCmodule'"=="Y" {
 			glo module "`mod'"
 			local filename     "${yearfolder}_v${vm}_M_v${va}_A_SARMD_`mod'"
 			do "`dopath2'\\`filename'.do"
-		}	
+		}
+		
+		if ${year}==2010 & "${code}" == "NPL" {
+			foreach mod in  "IDN" "COR" "DEM" "GEO" "UTL" "DWL"  { 
+				glo module "`mod'"
+				local filename     "${yearfolder}_v${vm}_M_v${va}_A_SARMD_`mod'"
+				do "`dopath2'\\`filename'.do"
+			}	
+			do "`doaux'\Database_GMD2.0.do"
+		}
 	}
 	else if ${year}>=2016 {
-		foreach mod in  "INC" "IND" "COR" "DEM" "IDN"  "LBR" "GEO" "UTL" "DWL"  { 
+		foreach mod in  "INC" "IND" "LBR" "IDN" "COR" "DEM" "GEO" "UTL" "DWL" "CONS" { // "CONS" 
 			glo module "`mod'"
 			local filename     "${yearfolder}_v${vm}_M_v${va}_A_SARMD_`mod'"
 			do "`dopath2'\\`filename'.do"
 		}	
-		do "`doaux'\Database_GMD2.0.do"
+		*do "`doaux'\Database_GMD2.0.do"
+		do "`doaux'\new\Database_GMD3.0.do"
 	}
 }
 

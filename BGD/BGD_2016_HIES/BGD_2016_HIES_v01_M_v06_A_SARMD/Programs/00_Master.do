@@ -11,7 +11,7 @@ global code         "BGD"
 global year         "2016"
 global survey       "HIES"
 global vm           "01"
-global va           "08"
+global va           "06"
 global yearfolder   ="${code}"+"_"+"${year}"+"_"+"${survey}"
 
 notes: possible answers for the following local: Y and N.
@@ -22,16 +22,10 @@ local includes_INCmodule "Y" //Y if INC module was created for this version//
 *==============================================================================================================================================================*
 notes: lines from 21 to 26 are run when a database is created as a data preparation for the harmonization. This SHOULD BE ALWAYS THE CASE. 
 
-// *Run master
-// local dopath1  "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_M"
-// local dopath2  "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs"
-// shell robocopy "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M" "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs" /e
-// do "`dopath2'//${yearfolder}_v${vm}_M.do"
-
 *Run master
 local dopath1  "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_M"
 local dopath2  "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs"
-shell robocopy "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_M" "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs" /e
+shell robocopy "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M" "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M\Programs" /e
 do "`dopath2'//${yearfolder}_v${vm}_M.do"
 
 * Copy do-files from repo to datalibweb
@@ -42,9 +36,6 @@ shell robocopy "${rootdofiles}\\${code}\\${yearfolder}\\${yearfolder}_SARMD" "${
 * Copy global labels do-file from repo to datalibweb
 local doaux    "${rootdofiles}/_aux"
 shell robocopy "${rootdofiles}\_aux" "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M_v${va}_A_SARMD\Programs" /e
-capture mkdir "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M_v${va}_A_SARMD\Data"
-capture mkdir "${rootdatalib}\\${code}\\${yearfolder}\\${yearfolder}_v${vm}_M_v${va}_A_SARMD\Data\Harmonized"
-
 
 if "`includes_INCmodule'"=="N" {
 	if ${year}<2016 { 
